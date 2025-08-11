@@ -1,35 +1,67 @@
-import express from 'express';
+import express, { type Express } from 'express';
 import dotenv from 'dotenv';
+import http from 'http';
+import cors from 'cors';
 import connectDB from './config/db.js';
 import { Webhook } from './models/messege.model.js';
+import { Server } from 'socket.io';
+import { handleWebhook } from './api/webhook.controller.js';
+import { getConversations, getMessagesByWaId, createUserMessage } from './api/message.controller.js';
 
 dotenv.config();
 
+export const app: Express = express();
+export const server = http.createServer(app);
+
+export const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_URL || 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+    },
+});
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.send('Server is running');
+});
+
+// Webhook endpoint for simulating WhatsApp messages
+app.post('/api/webhook/', handleWebhook(io));
+
+// API endpoints for list of conversations 
+app.get('/api/conversations', getConversations);
+
+// API endpoints for specific conversation 
+app.get('/api/messages/:wa_id', getMessagesByWaId);
+
+// API endpoint for handling message sent from ui
+app.post('/api/messages', createUserMessage(io));
+
+// Socket.IO connection
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+    socket.on('disconnect', () => {
+        console.log('A user disconnected:', socket.id);
+    });
+});
+
+const PORT = process.env.PORT || 5000;
+
 const startServer = async () => {
-    await connectDB(); 
-    const app = express();
-    const PORT = process.env.PORT || 5000;
-
-    app.get('/', (req, res) => {
-        res.send('Server is running');
-    });
-    
-    app.get('/api/test-db', async(req, res) => {
-        try {
-            const documentCount = await Webhook.countDocuments();
-            res.status(200).json({ message: 'Database connection successful', count: documentCount });
-        }catch (error) {
-            console.error('Database connection error:', error);
-            res.status(500).json({ message: 'Database connection failed', error: (error as Error).message });
-        }
-    });
-
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Error starting the server:', error);
+        process.exit(1);
+    }
 }
 
-startServer()
+startServer();
 
 
 
