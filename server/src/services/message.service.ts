@@ -27,7 +27,7 @@ export const processWebhookPayload = async (payload: IBasePayload, io: SocketIOS
     console.log(`'metaData' exists: ${value.metadata !== undefined}`);
     console.log("-----------------------------------------");
 
-    // process message 
+    // process message and update DB
     if (isMessagePayload(value)) {
         const message = value.messages?.[0];
         const contact = value.contacts?.[0];
@@ -61,7 +61,7 @@ export const processWebhookPayload = async (payload: IBasePayload, io: SocketIOS
         console.log(`message from ${savedDoc.wa_id} saved successfully`);
     }
 
-    // process status
+    // process status and update DB
     if (isStatusPayload(value)) {
         const status = value.statuses?.[0];
         if (!status) {
