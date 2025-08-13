@@ -17,8 +17,13 @@
       "dest": "/server/src/server.ts"
     },
     {
+      "src": "/assets/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000, immutable" },
+      "dest": "/client/dist/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/client/dist/$1"
+      "dest": "/client/dist/index.html"
     }
   ]
 }
