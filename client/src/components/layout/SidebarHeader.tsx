@@ -7,10 +7,17 @@ import { ModeToggle } from "@/common/ThemeToggle";
 export const SidebarHeader = () => {
   return (
     <div className="flex justify-between items-center p-3 bg-card border-b">
-      <Avatar>
-        <AvatarImage src="https://api.dicebear.com/8.x/initials/svg?seed=Admin" alt="Admin" />
-        <AvatarFallback>A</AvatarFallback>
-      </Avatar>
+      <div className="flex items-center gap-3">
+        <Avatar>
+          <AvatarImage src="https://api.dicebear.com/8.x/initials/svg?seed=Admin" alt="Admin" />
+          <AvatarFallback>A</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="font-semibold text-sm">Admin</span>
+          <span className="text-xs text-muted-foreground">Online</span>
+        </div>
+      </div>
+      
       <div className="flex items-center gap-1">
         <ModeToggle />
         <DropdownMenu>

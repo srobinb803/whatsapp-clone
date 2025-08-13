@@ -5,10 +5,18 @@ import path from "path"
 
 // https://vite.dev/config/
 export default defineConfig({
-   plugins: [react(), tailwindcss()],
+   server: {
+    allowedHosts: [
+      'localhost',
+      '9f3cf747a3b9.ngrok-free.app'
+    ]
+  },
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+
     },
+    
   },
 })

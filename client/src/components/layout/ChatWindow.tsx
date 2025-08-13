@@ -19,21 +19,21 @@ interface ChatWindowProps {
 export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, isLoading, onSendMessage }: ChatWindowProps) => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-   const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
+  // Scroll to bottom on new messages or when input focus changes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  useEffect(() => {
-    // Only scroll if we are not searching, to avoid jumping while typing
     if (!isSearching) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      // Use timeout to ensure scroll happens after DOM update
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
     }
-  }, [messages, isSearching]);
+  }, [messages, isSearching, isInputFocused]);
 
-   const filteredMessages = messages.filter(msg => 
+  const filteredMessages = messages.filter(msg => 
     msg.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -46,9 +46,8 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      {/* Chat Header */}
-      <div className="flex items-center p-3 bg-card border-b">
+    <div className="flex flex-col h-[100dvh] bg-background">
+      <div className="sticky top-0 z-10 flex items-center p-3 bg-card border-b">
         <Button onClick={onBackClick} variant="ghost" size="icon" className="md:hidden mr-2">
           <ArrowLeft />
         </Button>
@@ -56,7 +55,6 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
           <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${contactName}`} alt={contactName} />
           <AvatarFallback>{contactName.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
-        {/* CONDITIONAL HEADER UI --- */}
         {isSearching ? (
           <Input 
             placeholder="Search messages..." 
@@ -90,6 +88,7 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
           </DropdownMenu>
         </div>
       </div>
+
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {isLoading ? (
@@ -107,14 +106,13 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
                 status={msg.status}
               />
             ))}
-            {/* Dummy div to scroll to */}
             <div ref={messagesEndRef} />
           </>
         )}
       </div>
 
-      {/* Message Input Form */}
-      <div className="p-3 bg-card border-t">
+      {/* Sticky Input Area */}
+      <div className="sticky bottom-0 p-3 bg-card border-t">
         <form onSubmit={handleFormSubmit} className="flex items-center space-x-3">
           <Button type="button" variant="ghost" size="icon">
             <Smile className="h-6 w-6 text-muted-foreground" />
@@ -127,9 +125,16 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
             className="flex-1 bg-muted rounded-full px-4"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
             autoComplete="off"
           />
-          <Button type="submit" size="icon" className="rounded-full bg-ring hover:bg-ring/90">
+          <Button 
+            type="submit" 
+            size="icon" 
+            className="rounded-full bg-ring hover:bg-ring/90"
+      
+          >
             <Send size={20} />
           </Button>
         </form>
