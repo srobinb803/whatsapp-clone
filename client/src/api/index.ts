@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { IConversation, IClientMessage, IRawConversationDoc } from '@/types';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+ baseURL: import.meta.env.PROD ? '/api' : import.meta.env.VITE_API_URL,
 });
 
 export const getConversations = async (): Promise<IConversation[]> => {
