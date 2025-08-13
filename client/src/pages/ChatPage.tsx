@@ -5,7 +5,8 @@ import { getConversations, getMessagesByWaId, sendMessage } from '../api';
 import type { IConversation, IClientMessage } from '../types';
 import { useSocketEvents } from '../hooks/useSocketHook';
 import { socket } from '@/api/socket';
-import { ModeToggle } from '@/common/ThemeToggle';
+import { Loader2 } from 'lucide-react';
+
 
 export const ChatPage = () => {
   // --- STATE MANAGEMENT ---
@@ -135,12 +136,17 @@ export const ChatPage = () => {
           md:w-1/3 md:max-w-sm
         `}
       >
-        {/* The Sidebar component itself no longer needs height/overflow classes */}
-        <Sidebar
-          conversations={conversations}
-          selectedConversationId={selectedConversation?.wa_id || null}
-          onConversationSelect={handleConversationSelect}
-        />
+        {isConversationsLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <Sidebar
+            conversations={conversations}
+            selectedConversationId={selectedConversation?.wa_id || null}
+            onConversationSelect={handleConversationSelect}
+          />
+        )}
       </div>
       <div className={`h-full w-full flex-col ${selectedConversation ? 'flex' : 'hidden md:flex'} md:flex-1`}>
         {selectedConversation ? (
