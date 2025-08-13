@@ -2,6 +2,7 @@
   "name": "whastapp-clone",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "build": "npm run build --prefix api && npm run build --prefix client",
