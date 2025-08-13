@@ -10,7 +10,7 @@
   },
    "workspaces": [
     "client",
-    "api"
+    "server"
   ],
   "keywords": [],
   "author": "",
