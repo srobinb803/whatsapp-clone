@@ -14,17 +14,18 @@ export const app: Express = express();
 export const server = http.createServer(app);
 
 export const io = new Server(server, {
-    cors: {
-        origin: process.env.CLIENT_URL || 'http://localhost:3000',
-        methods: ['GET', 'POST'],
-    },
+  cors: {
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+  path: '/api/socket.io/',
 });
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Server is running');
+  res.send('Server is running');
 });
 
 // Webhook endpoint for simulating WhatsApp messages
@@ -41,12 +42,12 @@ app.post('/api/messages', createUserMessage(io));
 
 // Socket.IO connection
 io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+  console.log('A user connected:', socket.id);
 
-    socket.on('contact:getDetails', async (wa_id: string, callback) => {
+  socket.on('contact:getDetails', async (wa_id: string, callback) => {
     try {
       console.log(`[Socket] Received request for contact details for: ${wa_id}`);
-      
+
       // Find the most recent message from this contact to get their name.
       const contactDoc = await Webhook.findOne(
         { wa_id: wa_id, 'metaData.entry.0.changes.0.value.contacts.0.profile.name': { $exists: true } },
@@ -71,23 +72,27 @@ io.on('connection', (socket) => {
     }
   });
 
-    socket.on('disconnect', () => {
-        console.log('A user disconnected:', socket.id);
-    });
+  socket.on('disconnect', () => {
+    console.log('A user disconnected:', socket.id);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-    try {
-        await connectDB();
-        server.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('Error starting the server:', error);
-        process.exit(1);
-    }
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Error starting the server:', error);
+    process.exit(1);
+  }
+}
+
+if (process.env.VERCEL !== '1') {
+  startServer();
 }
 
 startServer();

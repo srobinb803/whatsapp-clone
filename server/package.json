@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "node --watch --import ./register-ts-node.mjs src/server.ts",
+    "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
