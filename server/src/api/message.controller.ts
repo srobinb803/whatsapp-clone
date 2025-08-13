@@ -4,36 +4,35 @@ import { formatMessageForClient, type IClientMessage } from '../utils/formatter.
 import { Server as SocketIOServer } from 'socket.io';
 
 // Get all conversations
-export const getConversations = async (res: Response): Promise<void> => {
-    try {
-        const conversations = await Webhook.aggregate([
-            { $match: { wa_id: { $exists: true } } }, // Only consider documents with a wa_id
+export const getConversations = async (req: Request, res: Response): Promise<void> => {
+   try {
+          const conversations = await Webhook.aggregate([
+            // Stage 1: Get only documents that are part of a conversation
+            { $match: { wa_id: { $exists: true, $ne: null } } },
+
+            // Stage 2: Sort by newest first
             { $sort: { createdAt: -1 } },
+
+            // Stage 3: Group by wa_id and get the ENTIRE last document.
             {
                 $group: {
                     _id: '$wa_id',
-                    name: { $first: '$metaData.entry.0.changes.0.value.contacts.0.profile.name' },
-                    lastMessageTimestamp: { $first: '$createdAt' },
-                    // Get the text from the last message
-                    lastMessage: { $first: '$metaData.entry.0.changes.0.value.messages.0.text.body' },
-                },
+                    lastDoc: { $first: '$$ROOT' }
+                }
             },
+
+            // Stage 4: Replace the root of the output with found document.
             {
-                $project: {
-                    _id: 0,
-                    wa_id: '$_id',
-                    name: 1,
-                    lastMessageTimestamp: 1,
-                    lastMessage: 1,
-                },
-            },
-            { $sort: { lastMessageTimestamp: -1 } },
+                $replaceRoot: { newRoot: '$lastDoc' }
+            }
         ]);
+        
         res.status(200).json(conversations);
     } catch (error) {
+        console.error('Error in getConversations aggregation:', error);
         res.status(500).json({ message: 'Error fetching conversations', error });
     }
-}
+};
 
 // Get all messages for a specific wa_id
 export const getMessagesByWaId = async (req: Request, res: Response): Promise<void> => {
@@ -75,7 +74,26 @@ export const createUserMessage = (io: SocketIOServer) => async (req: Request, re
         const clientMessage = formatMessageForClient(savedDoc);
 
         if (clientMessage) {
-            io.emit('newMessage', { wa_id: savedDoc.wa_id, message: clientMessage });
+            io.emit('message', { wa_id: savedDoc.wa_id, message: clientMessage });
+            
+            setTimeout(() => {
+                io.emit('statusUpdate', {
+                    wa_id: savedDoc.wa_id,
+                    message_id: savedDoc.message_id,
+                    status: 'delivered',
+                });
+                console.log(`[Simulation] Emitted 'delivered' status for ${savedDoc.message_id}`);
+            }, 1500); // Simulate a 1.5 second delay for delivery
+
+            setTimeout(() => {
+                io.emit('statusUpdate', {
+                    wa_id: savedDoc.wa_id,
+                    message_id: savedDoc.message_id,
+                    status: 'read',
+                });
+                console.log(`[Simulation] Emitted 'read' status for ${savedDoc.message_id}`);
+            }, 3000);
+
             res.status(201).json(clientMessage);
         } else {
             res.status(500).json({ message: 'Error formatting the created message' });

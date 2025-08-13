@@ -44,6 +44,7 @@ export const processWebhookPayload = async (payload: IBasePayload, io: SocketIOS
             payload_type: payload.payload_type,
             metaData: payload.metaData,
             createdAt: new Date(payload.createdAt),
+             isUserMessage: false,
         }
 
         const savedDoc = await Webhook.findOneAndUpdate(
@@ -77,7 +78,7 @@ export const processWebhookPayload = async (payload: IBasePayload, io: SocketIOS
         }
 
         const updatedDoc = await Webhook.findByIdAndUpdate(
-            existingMessage.metaData?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.id,
+            existingMessage._id,
             { $set: { status: status.status } },
             { new: true, runValidators: true }
         )
