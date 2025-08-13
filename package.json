@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --prefix api && npm run build --prefix client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+   "workspaces": [
+    "client",
+    "api"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
