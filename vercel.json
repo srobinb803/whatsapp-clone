@@ -1,5 +1,4 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "builds": [
     {
@@ -7,22 +6,25 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client/package.json",
+      "src": "client/vite.config.ts",
       "use": "@vercel/static-build",
-      "configuration": {         
-        "buildCommand": "npm run build",
-        "outputDirectory": "dist"  
+      "config": {
+        "distDir": "dist"
       }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server/src/server.ts" 
+      "dest": "/server/src/server.ts"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/client/dist/assets/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/$1" 
+      "dest": "/client/dist/index.html"
     }
   ]
 }
