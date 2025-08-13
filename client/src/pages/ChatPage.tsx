@@ -128,20 +128,19 @@ export const ChatPage = () => {
   // --- RENDER LOGIC ---
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
-      <div className={`h-full w-full   ${selectedConversation ? 'hidden md:flex' : 'flex'} md:w-1/3 md:max-w-sm border-r flex flex-col`}>
-        <div className="p-4 font-bold text-lg border-b flex-shrink-0 flex items-center justify-between">
-          <h2>Chats</h2>
-          <ModeToggle />
-        </div>
-        {isConversationsLoading ? (
-          <div className="p-4">Loading...</div>
-        ) : (
-          <Sidebar
-            conversations={conversations}
-            selectedConversationId={selectedConversation?.wa_id || null}
-            onConversationSelect={handleConversationSelect}
-          />
-        )}
+      <div
+        className={`
+          h-full w-full flex flex-col border-r bg-card
+          ${selectedConversation ? 'hidden md:flex' : 'flex'}
+          md:w-1/3 md:max-w-sm
+        `}
+      >
+        {/* The Sidebar component itself no longer needs height/overflow classes */}
+        <Sidebar
+          conversations={conversations}
+          selectedConversationId={selectedConversation?.wa_id || null}
+          onConversationSelect={handleConversationSelect}
+        />
       </div>
       <div className={`h-full w-full flex-col ${selectedConversation ? 'flex' : 'hidden md:flex'} md:flex-1`}>
         {selectedConversation ? (

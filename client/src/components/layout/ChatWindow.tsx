@@ -2,56 +2,94 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageBubble } from './Message';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Send, Loader2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, MoreVertical, Search, Smile, Paperclip } from 'lucide-react';
 import type { IClientMessage } from '../../types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface ChatWindowProps {
   contactName: string;
   contactPhone: string;
+  onBackClick: () => void;
   messages: IClientMessage[];
   isLoading: boolean;
   onSendMessage: (text: string) => void;
-  onBackClick: () => void;
 }
 
-export const ChatWindow = ({ contactName, contactPhone, messages, isLoading, onSendMessage, onBackClick }: ChatWindowProps) => {
+export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, isLoading, onSendMessage }: ChatWindowProps) => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+   const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const displayName = (typeof contactName === 'string' && contactName) ? contactName : 'Unknown Contact';
-  const initial = displayName.charAt(0).toUpperCase();
-
-  // Automatically scroll to the bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    // Only scroll if we are not searching, to avoid jumping while typing
+    if (!isSearching) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isSearching]);
+
+   const filteredMessages = messages.filter(msg => 
+    msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
       onSendMessage(newMessage);
-      setNewMessage(''); 
+      setNewMessage('');
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-muted/20">
+    <div className="flex flex-col h-full bg-background">
       {/* Chat Header */}
-      <div className="flex items-center p-2 md:p-4 bg-background border-b shadow-sm">
+      <div className="flex items-center p-3 bg-card border-b">
         <Button onClick={onBackClick} variant="ghost" size="icon" className="md:hidden mr-2">
           <ArrowLeft />
         </Button>
-        <Avatar className="h-12 w-12 mr-4">
-          <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${displayName}`} alt={displayName} />
-          <AvatarFallback>{initial}</AvatarFallback>
+        <Avatar className="h-10 w-10 mr-3">
+          <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${contactName}`} alt={contactName} />
+          <AvatarFallback>{contactName.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col">
-          <h3 className="font-semibold text-lg">{contactName}</h3>
-          <p className="text-xs text-muted-foreground leading-tight">{contactPhone}</p>
+        {/* CONDITIONAL HEADER UI --- */}
+        {isSearching ? (
+          <Input 
+            placeholder="Search messages..." 
+            className="flex-1 bg-muted"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            autoFocus
+          />
+        ) : (
+          <div className="flex-1">
+            <h3 className="font-semibold text-base leading-tight">{contactName}</h3>
+            <p className="text-xs text-muted-foreground leading-tight">{contactPhone}</p>
+          </div>
+        )}
+        
+        <div className="flex items-center gap-1">
+          <Button onClick={() => setIsSearching(!isSearching)} variant="ghost" size="icon">
+            <Search className="h-5 w-5 text-muted-foreground" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-5 w-5 text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Contact info</DropdownMenuItem>
+              <DropdownMenuItem>Clear chat</DropdownMenuItem>
+              <DropdownMenuItem>Delete chat</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {isLoading ? (
@@ -60,7 +98,7 @@ export const ChatWindow = ({ contactName, contactPhone, messages, isLoading, onS
           </div>
         ) : (
           <>
-            {messages.map((msg) => (
+            {filteredMessages.map((msg) => (
               <MessageBubble
                 key={msg.id}
                 text={msg.text}
@@ -76,16 +114,22 @@ export const ChatWindow = ({ contactName, contactPhone, messages, isLoading, onS
       </div>
 
       {/* Message Input Form */}
-      <div className="p-4 bg-background border-t">
-        <form onSubmit={handleFormSubmit} className="flex items-center space-x-2">
+      <div className="p-3 bg-card border-t">
+        <form onSubmit={handleFormSubmit} className="flex items-center space-x-3">
+          <Button type="button" variant="ghost" size="icon">
+            <Smile className="h-6 w-6 text-muted-foreground" />
+          </Button>
+          <Button type="button" variant="ghost" size="icon">
+            <Paperclip className="h-6 w-6 text-muted-foreground" />
+          </Button>
           <Input
             placeholder="Type a message..."
-            className="flex-1"
+            className="flex-1 bg-muted rounded-full px-4"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             autoComplete="off"
           />
-          <Button type="submit" disabled={!newMessage.trim()}>
+          <Button type="submit" size="icon" className="rounded-full bg-ring hover:bg-ring/90">
             <Send size={20} />
           </Button>
         </form>

@@ -46,57 +46,66 @@
 
   /* --- WhatsApp Color Palette --- */
 
-  /* Backgrounds */
-  --background: oklch(0.95 0.01 90);      /* Very light, slightly warm gray (App background) */
-  --card: oklch(1 0 0);                    /* White (for cards or popovers) */
-  --sidebar: oklch(1 0 0);                 /* White (Sidebar background) */
+--background: oklch(0.93 0.01 90);      /* App background (#E5DDD5 pattern equivalent) */
+  --foreground: oklch(0.35 0.01 90);      /* Main text color */
   
-  /* Message Bubbles */
-  --primary: oklch(0.93 0.09 130);         /* Light Green (Outgoing message bubble) */
-  --primary-foreground: oklch(0.15 0 0);   /* Dark Gray/Black (Text on green bubble) */
-  --secondary: oklch(1 0 0);               /* White (Incoming message bubble) */
-  --secondary-foreground: oklch(0.2 0 0);  /* Dark Gray (Text on white bubble) */
-
-  /* General UI */
-  --foreground: oklch(0.25 0 0);           /* Dark gray for main text */
-  --muted: oklch(0.96 0.01 90);            /* Lighter gray for muted elements */
-  --muted-foreground: oklch(0.45 0.01 90); /* Gray for placeholder text */
+  --card: oklch(0.98 0.005 90);           /* Sidebar/Header background (#F0F2F5) */
+  --card-foreground: oklch(0.35 0.01 90);
   
-  /* Accents & Borders */
-  --accent: oklch(0.96 0.01 90);           /* Light gray for selected/hover items */
-  --accent-foreground: oklch(0.15 0 0);    /* Dark text on accent */
-  --border: oklch(0.92 0.01 90);           /* Light gray for borders */
-  --ring: oklch(0.65 0.18 150.5);          /* WhatsApp Green for focus rings */
-  
-  /* Other standard variables */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
-  --card-foreground: oklch(0.15 0 0);
-  --input: oklch(0.92 0.01 90);
+  --popover-foreground: oklch(0.35 0.01 90);
+
+  /* Message Bubbles */
+  --primary: oklch(0.95 0.07 135);         /* Outgoing bubble green (#E7FFDB) */
+  --primary-foreground: oklch(0.25 0 0);   /* Text on green bubble */
+  --secondary: oklch(1 0 0);               /* Incoming bubble white (#FFFFFF) */
+  --secondary-foreground: oklch(0.25 0 0); /* Text on white bubble */
+
+  /* Muted elements & borders */
+  --muted: oklch(0.98 0.005 90);           /* Search bar background (#F0F2F5) */
+  --muted-foreground: oklch(0.45 0.01 90); /* Placeholder/icon text */
+  --border: oklch(0.92 0.01 90);           /* Borders */
+
+  /* Accent (for selected items, links, focus rings) */
+  --accent: oklch(0.96 0.005 90);          /* Selected conversation (#F5F5F5) */
+  --accent-foreground: oklch(0.15 0 0);
+  --ring: oklch(0.65 0.18 150.5);          /* WhatsApp's main green (#25D366) */
+  
+  --input: oklch(1 0 0);                   /* Message input background (white) */
   --destructive: oklch(0.6 0.22 25);
+
 
 }
 
 .dark {
- --background: oklch(0.1 0.02 260);
-  --foreground: oklch(0.95 0.01 260);
-  --card: oklch(0.15 0.02 260);
-  --card-foreground: oklch(0.95 0.01 260);
-  --popover: oklch(0.15 0.02 260);
-  --popover-foreground: oklch(0.95 0.01 260);
-  --primary: oklch(0.25 0.08 140); /* Darker WhatsApp Green */
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.2 0.02 260); /* Dark gray for incoming bubbles */
-  --secondary-foreground: oklch(0.95 0.01 260);
-  --muted: oklch(0.2 0.02 260);
-  --muted-foreground: oklch(0.6 0.01 260);
-  --accent: oklch(0.2 0.02 260);
-  --accent-foreground: oklch(0.95 0.01 260);
-  --destructive: oklch(0.5 0.2 25);
-  --border: oklch(0.25 0.02 260);
-  --input: oklch(0.25 0.02 260);
+--background: oklch(0.10 0.01 240);     /* App background (#0b141a) */
+  --foreground: oklch(0.92 0.01 240);
+  
+  --card: oklch(0.15 0.01 240);           /* Sidebar/Header background (#202c33) */
+  --card-foreground: oklch(0.92 0.01 240);
+  
+  --popover: oklch(0.15 0.01 240);
+  --popover-foreground: oklch(0.92 0.01 240);
+
+  /* Message Bubbles */
+  --primary: oklch(0.25 0.06 145);        /* Outgoing bubble green (#005c4b) */
+  --primary-foreground: oklch(0.95 0.01 240);
+  --secondary: oklch(0.20 0.02 240);      /* Incoming bubble dark gray (#202c33) */
+  --secondary-foreground: oklch(0.92 0.01 240);
+
+  /* Muted elements & borders */
+  --muted: oklch(0.20 0.02 240);          /* Search bar background */
+  --muted-foreground: oklch(0.55 0.01 240);
+  --border: oklch(0.25 0.02 240);
+
+  /* Accent */
+  --accent: oklch(0.22 0.02 240);         /* Selected conversation */
+  --accent-foreground: oklch(0.95 0.01 240);
   --ring: oklch(0.65 0.18 150.5);
-  --sidebar: oklch(0.15 0.02 260);
+  
+  --input: oklch(0.20 0.02 240);          /* Message input background */
+  --destructive: oklch(0.5 0.2 25);
+
 }
 
 @layer base {
