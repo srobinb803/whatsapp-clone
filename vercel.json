@@ -2,13 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/src/server.ts",
-      "use": "@vercel/node"
-    },
-    {
       "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
+    },
+    {
+      "src": "server/src/server.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -17,9 +17,7 @@
       "dest": "/server/src/server.ts"
     },
     {
-      "src": "/assets/(.*)",
-      "headers": { "cache-control": "s-maxage=31536000, immutable" },
-      "dest": "/client/dist/assets/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
