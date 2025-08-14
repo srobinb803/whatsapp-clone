@@ -5,10 +5,16 @@ import path from "path"
 
 // https://vite.dev/config/
 export default defineConfig({
-   server: {
+  server: {
+    proxy: {
+      '/api': 'http://localhost:5000',
+      '/socket.io': {
+        target: 'http://localhost:5000',
+        ws: true, 
+      }
+    },
     allowedHosts: [
-      'localhost',
-      '9f3cf747a3b9.ngrok-free.app'
+     
     ]
   },
   plugins: [react(), tailwindcss()],

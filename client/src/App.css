@@ -116,3 +116,13 @@
     @apply bg-background text-foreground;
   }
 }
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    overscroll-behavior: none;
+  }
+}

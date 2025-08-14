@@ -46,9 +46,9 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <>
       {/* Chat Header */}
-      <div className="flex items-center p-3 bg-card border-b">
+      <header className="flex items-center p-3 bg-card border-b flex-shrink-0">
         <Button onClick={onBackClick} variant="ghost" size="icon" className="md:hidden mr-2">
           <ArrowLeft />
         </Button>
@@ -89,9 +89,9 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
+      </header>
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main className="flex-1 overflow-y-auto space-y-1 p-4">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -111,10 +111,10 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
             <div ref={messagesEndRef} />
           </>
         )}
-      </div>
+      </main>
 
       {/* Message Input Form */}
-      <div className="p-3 bg-card border-t">
+     <footer className="p-3 bg-card border-t flex-shrink-0">
         <form onSubmit={handleFormSubmit} className="flex items-center space-x-3">
           <Button type="button" variant="ghost" size="icon">
             <Smile className="h-6 w-6 text-muted-foreground" />
@@ -133,7 +133,7 @@ export const ChatWindow = ({ contactName, contactPhone, onBackClick, messages, i
             <Send size={20} />
           </Button>
         </form>
-      </div>
-    </div>
+      </footer>
+    </>
   );
 };

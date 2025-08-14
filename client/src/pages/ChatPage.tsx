@@ -128,7 +128,8 @@ export const ChatPage = () => {
 
   // --- RENDER LOGIC ---
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background">
+    <div className="h-dvh w-screen flex flex-col overflow-hidden bg-background">
+      <div className='flex flex-1 overflow-hidden '>
       <div
         className={`
           h-full w-full flex flex-col border-r bg-card
@@ -145,10 +146,11 @@ export const ChatPage = () => {
             conversations={conversations}
             selectedConversationId={selectedConversation?.wa_id || null}
             onConversationSelect={handleConversationSelect}
+            isLoading={isConversationsLoading}
           />
         )}
       </div>
-      <div className={`h-full w-full flex-col ${selectedConversation ? 'flex' : 'hidden md:flex'} md:flex-1`}>
+      <div className={`h-full w-full flex flex-col ${selectedConversation ? 'flex' : 'hidden md:flex'} md:flex-1`}>
         {selectedConversation ? (
           <ChatWindow
             contactName={selectedConversation.name}
@@ -164,6 +166,7 @@ export const ChatPage = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
