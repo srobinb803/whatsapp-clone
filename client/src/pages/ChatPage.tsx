@@ -128,7 +128,7 @@ export const ChatPage = () => {
 
   // --- RENDER LOGIC ---
   return (
-    <div className="h-dvh w-screen flex flex-col overflow-hidden bg-background">
+    <div className="h-[var(--vh)] w-screen flex flex-col overflow-hidden bg-background">
       <div className='flex flex-1 overflow-hidden '>
       <div
         className={`
